@@ -1,0 +1,49 @@
+name: Test Project
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 's3-basic/**'
+      - 's3-basic-deployment.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: |
+          cd s3-basic
+            npm ci
+      - name: Run tests
+        run: |
+          cd s3-basic
+            npm test
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: |
+          cd s3-basic
+          npm ci
+      - name: Build project
+        run: |
+          cd s3-basic
+          npm run build
+      - name: Deploy
+        run: echo "Deploying..."
+      - name: Completed
+        run: echo "Deployment complete."
