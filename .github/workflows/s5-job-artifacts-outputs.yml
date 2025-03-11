@@ -27,6 +27,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      script-file: ${{ steps.publish.outputs.script-file }} # define id (publish) and output variable (script-file)
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -38,6 +40,9 @@ jobs:
         run: |
           cd s5-job-artifacts-outputs
           npm run build
+      - name: Publish JS filename
+        id: publish
+        run: find s5-job-artifacts-outputs/dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
