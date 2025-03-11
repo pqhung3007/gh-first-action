@@ -1,0 +1,55 @@
+name: Deploy website
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 's5-job-artifacts-outputs.yml'
+      - 's5-job-artifacts-outputs/**'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          cd s5-job-artifacts-outputs
+          npm ci
+      - name: Lint code
+        run: |
+          cd s5-job-artifacts-outputs
+          npm run lint
+      - name: Run tests
+        run: |
+          cd s5-job-artifacts-outputs
+          npm test
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          cd s5-job-artifacts-outputs
+          npm ci
+      - name: Build website
+        run: |
+          cd s5-job-artifacts-outputs
+          npm run build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-file
+          path: s5-job-artifacts-outputs/dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-file
+      - name: Deploy
+        run: echo "Deploying..."
