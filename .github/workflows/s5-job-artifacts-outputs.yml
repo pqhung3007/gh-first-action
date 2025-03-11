@@ -12,6 +12,11 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('s5-job-artifacts-outputs/package-lock.json') }}
       - name: Install dependencies
         run: |
           cd s5-job-artifacts-outputs
@@ -32,6 +37,11 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('s5-job-artifacts-outputs/package-lock.json') }}
       - name: Install dependencies
         run: |
           cd s5-job-artifacts-outputs
