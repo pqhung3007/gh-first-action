@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - 's5-job-artifacts-outputs.yml'
+      - './.github/workflows/s5-job-artifacts-outputs.yml'
       - 's5-job-artifacts-outputs/**'
 jobs:
   test:
