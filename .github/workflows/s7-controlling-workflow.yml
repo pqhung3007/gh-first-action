@@ -37,6 +37,7 @@ jobs:
           path: s7-controlling-workflow/node_modules
           key: deps-node-modules-${{ hashFiles('s7-controlling-workflow/**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         working-directory: s7-controlling-workflow
         run: npm ci
       - name: Test code
@@ -62,6 +63,7 @@ jobs:
           path: s7-controlling-workflow/node_modules
           key: deps-node-modules-${{ hashFiles('s7-controlling-workflow/**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         working-directory: s7-controlling-workflow
         run: npm ci
       - name: Build website
