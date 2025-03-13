@@ -1,4 +1,4 @@
-name: Website Deployment Continued
+name: Website Deployment Reusable
 on:
   push:
     branches:
@@ -82,6 +82,8 @@ jobs:
   deploy:
     needs: build
     use: ./.github/workflows/reusable.yml
+    with:
+      artifact-name: dist-files
 
   report:
     needs:
