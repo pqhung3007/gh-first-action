@@ -14,15 +14,15 @@ jobs:
     env:
       MONGODB_CONNECTION_PROTOCOL: mongodb
       MONGODB_USERNAME: root
-      MONGODB_PASSWORD: password-test
-      MONGODB_CLUSTER_ADDRESS: mongodb-local:27017
+      MONGODB_PASSWORD: example
+      MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017
       PORT: 8000
     services:
-      mongodb-local:
+      mongodb:
         image: mongo
         env:
           MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: password-test
+          MONGO_INITDB_ROOT_PASSWORD: example
         ports:
           - 27017:27017
     steps:
