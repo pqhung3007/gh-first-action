@@ -1,0 +1,96 @@
+name: Website Deployment Continued
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/s7-controlling-workflow.yml'
+      - 's7-controlling-workflow/**'
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: s7-controlling-workflow/node_modules
+          key: deps-node-modules-${{ hashFiles('s7-controlling-workflow/**/package-lock.json') }}
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: s7-controlling-workflow
+        run: npm ci
+      - name: Lint code
+        working-directory: s7-controlling-workflow
+        run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: s7-controlling-workflow/node_modules
+          key: deps-node-modules-${{ hashFiles('s7-controlling-workflow/**/package-lock.json') }}
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: s7-controlling-workflow
+        run: npm ci
+      - name: Test code
+        continue-on-error: true
+        id: run-tests
+        working-directory: s7-controlling-workflow
+        run: npm run test
+      - name: Upload test report
+        if: failure() && steps.run-tests.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: s7-controlling-workflow/test.json
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: s7-controlling-workflow/node_modules
+          key: deps-node-modules-${{ hashFiles('s7-controlling-workflow/**/package-lock.json') }}
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: s7-controlling-workflow
+        run: npm ci
+      - name: Build website
+        id: build-website
+        working-directory: s7-controlling-workflow
+        run: npm run build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files
+          path: s7-controlling-workflow/dist
+
+  deploy:
+    needs: build
+    use: ./.github/workflows/reusable.yml
+
+  report:
+    needs:
+      - lint
+      - test
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output information
+        run: |
+          echo "Something went wrong"
+          echo "${{ toJSON(github) }}"
