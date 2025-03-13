@@ -35,13 +35,13 @@ jobs:
           key: npm-deps-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
-        working-directory: s6-env-and-secrets
+        working-directory: s8-docker-deploy
       - name: Run server
         run: npm start & npx wait-on http://127.0.0.1:$PORT
-        working-directory: s6-env-and-secrets
+        working-directory: s8-docker-deploy
       - name: Run tests
         run: npm test
-        working-directory: s6-env-and-secrets
+        working-directory: s8-docker-deploy
       - name: Output information
         run: |
           echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
