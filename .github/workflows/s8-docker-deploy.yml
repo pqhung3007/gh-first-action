@@ -12,10 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     container: node:16
     env:
-      MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-      MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-      MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
+      MONGODB_CONNECTION_PROTOCOL: mongodb
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: password-test
+      MONGODB_CLUSTER_ADDRESS: mongodb-local:27017
       PORT: 8000
+    services:
+      mongodb:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: password-test
+        ports:
+          - 27017:27017
     steps:
       - name: Get Code
         uses: actions/checkout@v3
