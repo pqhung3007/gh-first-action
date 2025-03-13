@@ -18,7 +18,7 @@ jobs:
       MONGODB_CLUSTER_ADDRESS: mongodb-local:27017
       PORT: 8000
     services:
-      mongodb:
+      mongodb-local:
         image: mongo
         env:
           MONGO_INITDB_ROOT_USERNAME: root
