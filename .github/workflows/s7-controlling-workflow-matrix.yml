@@ -1,0 +1,27 @@
+name: Matrix Demo
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/s7-controlling-workflow-matrix.yml'
+      - 's7-controlling-workflow/**'
+
+jobs:
+  build:
+    continue-on-error: true
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+        operating-system: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.operating-system }}
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Install NodeJS
+        id: cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Log NodeJS version
+        run: node --version
