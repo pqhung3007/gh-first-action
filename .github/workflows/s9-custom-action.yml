@@ -81,3 +81,7 @@ jobs:
       - name: Run custom action
         id: custom-action
         uses: ./.github/actions/deploy-s3-javascript
+        with:
+          bucket: 'gha-custom-action-hosting'
+          dist-folder: './dist'
+          bucket-region: 'us-east-2'
