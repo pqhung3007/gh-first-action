@@ -4,6 +4,16 @@ const exec = require('@actions/exec');
 
 function run() {
     core.notice('Hello from my custom JS action')
+    const bucket = core.getInput('bucket', { required: true })
+    const bucketRegion = core.getInput('bucket-region', { required: true })
+    const distFolder = core.getInput('dist-folder', { required: true })
+
+    // log input
+    core.notice(`Bucket: ${bucket}`)
+    core.notice(`Bucket Region: ${bucketRegion}`)
+    core.notice(`Dist Folder: ${distFolder}`)
+
+    exec.exec('ls', ['-la'])
 }
 
 run()
