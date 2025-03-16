@@ -1,4 +1,4 @@
-name: Deployment
+name: Custom Action
 on:
   push:
     branches:
@@ -16,23 +16,19 @@ jobs:
         id: cache-deps
         uses: ./.github/actions/cache-deps
       - name: Lint code
+        working-directory: s9-custom-action
         run: npm run lint
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
         uses: actions/checkout@v4
-      - name: Cache dependencies
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - name: Load and cache dependencies
+        id: cache-deps
+        uses: ./.github/actions/cache-deps
       - name: Test code
         id: run-tests
+        working-directory: s9-custom-action
         run: npm run test
       - name: Upload test report
         if: failure() && steps.run-tests.outcome == 'failure'
@@ -46,16 +42,11 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v4
-      - name: Cache dependencies
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - name: Load and cache dependencies
+        id: cache-deps
+        uses: ./.github/actions/cache-deps
       - name: Build website
+        working-directory: s9-custom-action
         run: npm run build
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
