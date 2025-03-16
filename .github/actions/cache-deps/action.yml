@@ -7,8 +7,8 @@ runs:
       id: cache
       uses: actions/cache@v4
       with:
-        path: 's9-custom-action/node_modules'
-        key: 'deps-node-modules-${{ hashFiles('s9-custom-action/**/package-lock.json') }}'
+        path: s9-custom-action/node_modules
+        key: deps-node-modules-${{ hashFiles('s9-custom-action/**/package-lock.json') }}
     - name: Install dependencies
       id: install
       if: steps.cache.outputs.cache-hit != 'true'
