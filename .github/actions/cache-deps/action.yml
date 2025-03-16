@@ -1,17 +1,23 @@
 name: Get & Cache Dependencies
 description: Get the dependencies and cache them for future use
+inputs:
+  caching:
+    description: 'Whether to cache dependencies for not'
+    required: false
+    default: 'true'
 runs:
   using: composite
   steps:
     - name: Cache dependencies
       id: cache
+      if: inputs.caching == 'true'
       uses: actions/cache@v4
       with:
         path: s9-custom-action/node_modules
         key: deps-node-modules-${{ hashFiles('s9-custom-action/**/package-lock.json') }}
     - name: Install dependencies
       id: install
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true' || inputs.caching != 'true'
       working-directory: s9-custom-action
       run: npm ci
       shell: bash
