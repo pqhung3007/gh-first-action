@@ -17,6 +17,9 @@ jobs:
         uses: ./.github/actions/cache-deps
         with:
           caching: 'true'
+      - name: Output information
+        run: |
+          echo "Cache used: ${{ steps.cache-deps.outputs.used-cache }}"
       - name: Lint code
         working-directory: s9-custom-action
         run: npm run lint

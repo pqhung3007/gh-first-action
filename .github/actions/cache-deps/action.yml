@@ -5,6 +5,10 @@ inputs:
     description: 'Whether to cache dependencies for not'
     required: false
     default: 'true'
+outputs:
+  used-cache:
+    description: 'Whether the cache was used or not'
+    value: ${{ steps.install.outputs.cache-hit }}
 runs:
   using: composite
   steps:
@@ -19,5 +23,7 @@ runs:
       id: install
       if: steps.cache.outputs.cache-hit != 'true' || inputs.caching != 'true'
       working-directory: s9-custom-action
-      run: npm ci
+      run: | 
+        npm ci
+        echo "cache-hit=${{ inputs.caching }}" >> $GITHUB_ENV
       shell: bash
